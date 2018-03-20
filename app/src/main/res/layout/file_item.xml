@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/selected_ripple"
+    android:layout_height="60dp">
+    <ImageView
+        android:id="@+id/file_thumbnail"
+        android:layout_margin="5dp"
+        android:background="@drawable/folder2"
+        android:layout_width="45dp"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:id="@+id/file_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/file_thumbnail"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/file_thumbnail"
+        android:text="文件名"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/file_describe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/file_thumbnail"
+        android:layout_alignStart="@+id/file_name"
+        android:text="描述"
+        android:textSize="15dp" />
+
+    <RadioButton
+        android:id="@+id/radioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp" />
+
+</RelativeLayout>
