@@ -1,7 +1,6 @@
 package com.zqw.fileoperation.fragments;
 
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -16,24 +15,21 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.zqw.fileoperation.MainActivity;
 import com.zqw.fileoperation.adapters.MyAdapter;
 import com.zqw.fileoperation.R;
 import com.zqw.fileoperation.adapters.OnItemClickListener;
 import com.zqw.fileoperation.functions.FileFounder;
-import com.zqw.fileoperation.functions.RandomNameGenerater;
 import com.zqw.fileoperation.pojos.MyFile;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by 51376 on 2018/3/15.
  */
-public class Folderfragment extends Fragment {
+public class FolderFragment extends Fragment {
 
     private RecyclerView recyclerView = null;
     private List<MyFile> myFiles = new LinkedList<>();
@@ -61,7 +57,7 @@ public class Folderfragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.folder_fragement, container, false);
+        View view = inflater.inflate(R.layout.folder_fragment, container, false);
         this.view = view;
         mainActivity = (MainActivity) getActivity();
         return view;
@@ -76,6 +72,7 @@ public class Folderfragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mainActivity.currentFragment = this;
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(manager);
@@ -128,10 +125,10 @@ public class Folderfragment extends Fragment {
                     }
                     manager = getFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
-                    Folderfragment newfolderfragment = new Folderfragment();
+                    FolderFragment newfolderfragment = new FolderFragment();
                     //为新的文件夹碎片设置路径
                     newfolderfragment.setAbsolutePath(myFile.getAbsolutePath());
-                    Folderfragment oldfolderfragment = (Folderfragment) manager.findFragmentById(R.id.folder_fragment_layout);
+                    FolderFragment oldfolderfragment = (FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout);
                     transaction.remove(oldfolderfragment);
                     transaction.add(R.id.folder_fragment_layout, newfolderfragment);
                     //transaction.replace(R.id.folder_fragment_layout, newfolderfragment);
@@ -143,7 +140,7 @@ public class Folderfragment extends Fragment {
             @Override
             public void onItemLongClick(View view, int position) {
                // Log.d("test2","OK!");
-                toggleBottomMenu();
+                toggleBottomPopupMenu();
               //  ViewGroup.LayoutParams layoutParams = mainActivity.linearLayout.getLayoutParams();
 //                layoutParams.height=((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()));
 //            // layoutParams.height = expectedHeight;
@@ -153,25 +150,26 @@ public class Folderfragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    public void toggleBottomMenu(){
-        int begin = 0,end = 0;
-        if(mainActivity.linearLayout.getLayoutParams().height ==0)
-            end = 200;
-        else {
-            begin = 200;
-        }
-        final ViewGroup.LayoutParams layoutParams = mainActivity.linearLayout.getLayoutParams();
-        final ValueAnimator  animator = ValueAnimator.ofInt(begin,end);
-        animator.setDuration(600);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int expectedheight = (int)animation.getAnimatedValue();
-                layoutParams.height=((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, expectedheight, getResources().getDisplayMetrics()));
-                mainActivity.linearLayout.setLayoutParams(layoutParams);
-            }
-        });
-        animator.start();
+    public void toggleBottomPopupMenu() {
+        mainActivity.toggleBottomPopupMenu();
+//        int begin = 0,end = 0;
+//        if(mainActivity.linearLayout.getLayoutParams().height ==0)
+//            end = 200;
+//        else {
+//            begin = 200;
+//        }
+//        final ViewGroup.LayoutParams layoutParams = mainActivity.linearLayout.getLayoutParams();
+//        final ValueAnimator  animator = ValueAnimator.ofInt(begin,end);
+//        animator.setDuration(600);
+//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                int expectedheight = (int)animation.getAnimatedValue();
+//                layoutParams.height=((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, expectedheight, getResources().getDisplayMetrics()));
+//                mainActivity.linearLayout.setLayoutParams(layoutParams);
+//            }
+//        });
+//        animator.start();
     }
 }
 
