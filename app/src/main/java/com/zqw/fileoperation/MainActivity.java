@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //通过id加载控件
         previewBar = (RecyclerView) findViewById(R.id.preview_bar);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh_layout);
@@ -136,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
     }
 }

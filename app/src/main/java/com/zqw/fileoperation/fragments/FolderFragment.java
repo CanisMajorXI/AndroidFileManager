@@ -5,13 +5,13 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,24 +55,26 @@ public class FolderFragment extends Fragment {
         this.absolutePath = absolutePath;
     }
 
+    //在onAttach内获取活动的实例
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) getActivity();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.folder_fragment, container, false);
         this.view = view;
-        mainActivity = (MainActivity) getActivity();
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d("test", "on start path: " + absolutePath);
-    }
-
-    @Override
-    public void onResume() {
         super.onResume();
         mainActivity.currentFragment = this;
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(manager);
