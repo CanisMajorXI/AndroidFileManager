@@ -36,8 +36,10 @@ public class FolderFragment extends Fragment {
     private FragmentManager manager = null;
     private View view;
     private String absolutePath = "/storage/emulated/0";
-    private MyAdapter adapter = null;
+    public MyAdapter adapter = null;
     private   MainActivity mainActivity = null;
+
+    public LinearLayoutManager linearLayoutManager = null;
 
     public RecyclerView getRecyclerView() {
         return recyclerView;
@@ -72,12 +74,11 @@ public class FolderFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        super.onResume();
         mainActivity.currentFragment = this;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(manager);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         myFiles = FileFounder.getFilesFromDir(absolutePath, getActivity());
         if (myFiles == null) {
@@ -141,8 +142,9 @@ public class FolderFragment extends Fragment {
             //长按文件事件
             @Override
             public void onItemLongClick(View view, int position) {
+
                // Log.d("test2","OK!");
-                toggleBottomPopupMenu();
+                toggleBottomPopupMenu(linearLayoutManager, position);
               //  ViewGroup.LayoutParams layoutParams = mainActivity.linearLayout.getLayoutParams();
 //                layoutParams.height=((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()));
 //            // layoutParams.height = expectedHeight;
@@ -152,8 +154,8 @@ public class FolderFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    public void toggleBottomPopupMenu() {
-        mainActivity.toggleBottomPopupMenu();
+    public void toggleBottomPopupMenu(LinearLayoutManager manager, int position) {
+        mainActivity.toggleBottomPopupMenu(linearLayoutManager, position);
 //        int begin = 0,end = 0;
 //        if(mainActivity.linearLayout.getLayoutParams().height ==0)
 //            end = 200;

@@ -31,12 +31,21 @@
         android:text="描述"
         android:textSize="15dp" />
 
-    <RadioButton
-        android:id="@+id/radioButton"
+    <CheckBox
+        android:id="@+id/file_item_checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp" />
+        android:layout_marginEnd="12dp" />
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radioButton"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginEnd="10dp" />-->
+
 
 </RelativeLayout>

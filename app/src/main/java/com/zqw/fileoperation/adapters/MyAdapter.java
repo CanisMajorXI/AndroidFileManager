@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -67,7 +68,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             holder.thumbnail.setBackgroundResource(R.drawable.file1);
         }
     }
-
     @Override
     public int getItemCount() {
         return myFiles.size();
@@ -77,12 +77,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         TextView fileName;
         TextView fileDescribe;
         ImageView thumbnail;
+         CheckBox checkBox;
 
         public ViewHolder(View view) {
             super(view);
             fileName = (TextView) view.findViewById(R.id.file_name);
             fileDescribe = (TextView) view.findViewById(R.id.file_describe);
             thumbnail = (ImageView) view.findViewById(R.id.file_thumbnail);
+            checkBox = (CheckBox) view.findViewById(R.id.file_item_checkBox);
+            checkBox.setVisibility(View.GONE);
         }
     }
 

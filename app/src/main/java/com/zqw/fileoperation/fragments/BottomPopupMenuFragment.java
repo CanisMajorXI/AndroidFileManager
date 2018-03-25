@@ -2,7 +2,6 @@ package com.zqw.fileoperation.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ public class BottomPopupMenuFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_popup_menu_fragment, container, false);
+        View view = inflater.inflate(R.layout.bottom_popup_menu, container, false);
         mainActivity = (MainActivity) getActivity();
         return view;
     }
