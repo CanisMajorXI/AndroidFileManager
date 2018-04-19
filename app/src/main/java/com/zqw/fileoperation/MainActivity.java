@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.zqw.fileoperation.adapters.MyAdapter;
 import com.zqw.fileoperation.adapters.OnItemClickListener;
 import com.zqw.fileoperation.adapters.PreviewBarAdapter;
-import com.zqw.fileoperation.fragments.BottomPopupMenuFragment;
 import com.zqw.fileoperation.fragments.FolderFragment;
 
 import java.io.File;
@@ -45,10 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final public FragmentManager manager = getFragmentManager();
     public String currentAbsolutePath = "/storage/emulated/0";
     public List<String> previewBarItems = null;
-    public Fragment currentFragment = null;
     public PreviewBarAdapter adapter;
     public RecyclerView previewBar = null;
-    public BottomPopupMenuFragment bottomPopupMenuFragment = null;
     public LinearLayout bottomPopupMenuLayout = null;
     public View fileItemView = null;
     public LinearLayoutManager linearLayoutManager = null;
@@ -98,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackStackChanged() {
-        if (!(currentFragment instanceof FolderFragment)) return;
         int backStackEntryCount = manager.getBackStackEntryCount();
         if (backStackEntryCount < lastBackStackCount) {
             previewBarItems.remove(previewBarItems.size() - 1);
@@ -132,30 +128,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.linearLayoutManager = linearLayoutManager;
         //linearLayoutManager.getItemCount();
         // MyAdapter myAdapter = ((FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout)).adapter;
-        // myAdapter.getItemCount();
-        int itemcount = linearLayoutManager.getItemCount();
-        this.position = position;
+        //this.position = position;
         int begin = 0, end = 0;
+        FolderFragment folderFragment = ((FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout));
         if (bottomPopupMenuLayout.getHeight() == 0) {
-            Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
+            //Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
             end = 120;
-            for (int i = 0; i < itemcount; i++) {
-                View view = linearLayoutManager.getChildAt(i);
-                //((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.VISIBLE);
-            }
+            int firstCount = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastcount = linearLayoutManager.findLastVisibleItemPosition();
+            folderFragment.adapter.setChecked(true);
+            folderFragment.adapter.notifyDataSetChanged();
+//            for (int i = firstCount; i <= lastcount; i++) {
+//                View view = linearLayoutManager.getChildAt(i);
+//                //Log.d("test7", i+" : "+(view == null) + "");
+////                ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.VISIBLE);
+////                folderFragment.adapter.setChecked(true);
+//            }
 
         } else {
             begin = 120;
-            //Log.d("test7", linearLayoutManager.getItemCount() + "");
-            Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
+            // Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
 
-
-            View view1 = linearLayoutManager.findViewByPosition(7);
-            Log.d("test7", (view1 == null) + "");
-            for (int i = 0; i < 5; i++) {
-                View view = linearLayoutManager.getChildAt(i);
-                ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.VISIBLE);
-            }/**/
+            //Log.d("test7", (view1 == null) + "");
+            int firstCount = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastcount = linearLayoutManager.findLastVisibleItemPosition();
+            Log.d("test7", firstCount + "   " + lastcount);
+            folderFragment.adapter.setChecked(false);
+            folderFragment.adapter.notifyDataSetChanged();
+//            for (int i = firstCount; i <= lastcount; i++) {
+//                View view = linearLayoutManager.getChildAt(i);
+//                ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.GONE);
+//
+//            }/**/
         }
         final ViewGroup.LayoutParams layoutParams = bottomPopupMenuLayout.getLayoutParams();
         final ValueAnimator animator = ValueAnimator.ofInt(begin, end);

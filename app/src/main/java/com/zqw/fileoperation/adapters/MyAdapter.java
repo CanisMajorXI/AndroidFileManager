@@ -28,6 +28,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private Context context;
     private OnItemClickListener onItemClickListener;
     public FragmentManager manager = null;
+    private boolean isChecked = false;
 
     public MyAdapter(List<MyFile> myFiles, FragmentManager fragmentManager, FolderFragment folderFragment, Context context) {
         this.myFiles = myFiles;
@@ -68,18 +69,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         else if (myFile.getType() == 1) {
             holder.thumbnail.setBackgroundResource(R.drawable.file1);
         }
-        holder.checkBox.setVisibility(View.VISIBLE);
+        if (isChecked)
+            holder.checkBox.setVisibility(View.VISIBLE);
+        else holder.checkBox.setVisibility(View.GONE);
     }
+
     @Override
     public int getItemCount() {
         return myFiles.size();
     }
 
-     class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView fileName;
         TextView fileDescribe;
         ImageView thumbnail;
-         CheckBox checkBox;
+        CheckBox checkBox;
 
         public ViewHolder(View view) {
             super(view);
@@ -93,5 +97,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

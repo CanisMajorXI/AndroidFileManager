@@ -38,7 +38,6 @@ public class FolderFragment extends Fragment {
     private String absolutePath = "/storage/emulated/0";
     public MyAdapter adapter = null;
     private   MainActivity mainActivity = null;
-    private boolean isChecked = false;
 
     public LinearLayoutManager linearLayoutManager = null;
 
@@ -75,8 +74,6 @@ public class FolderFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mainActivity.currentFragment = this;
-
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -177,12 +174,5 @@ public class FolderFragment extends Fragment {
 //        animator.start();
     }
 
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
-    }
 }
 
