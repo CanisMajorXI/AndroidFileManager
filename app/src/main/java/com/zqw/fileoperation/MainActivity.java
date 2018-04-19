@@ -27,9 +27,11 @@ import com.zqw.fileoperation.adapters.MyAdapter;
 import com.zqw.fileoperation.adapters.OnItemClickListener;
 import com.zqw.fileoperation.adapters.PreviewBarAdapter;
 import com.zqw.fileoperation.fragments.FolderFragment;
+import com.zqw.fileoperation.pojos.MyFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -40,17 +42,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SwipeRefreshLayout swipeRefreshLayout = null;
     private int lastBackStackCount = 0;
     private boolean hasPermission = false;
+    private Button bottomMenuCompress = null;
+    private Button bottomMenuDecompress = null;
+    private boolean readyCompress = false;
 
     final public FragmentManager manager = getFragmentManager();
     public String currentAbsolutePath = "/storage/emulated/0";
     public List<String> previewBarItems = null;
-    public PreviewBarAdapter adapter;
+    public PreviewBarAdapter adapter = null;
     public RecyclerView previewBar = null;
     public LinearLayout bottomPopupMenuLayout = null;
     public View fileItemView = null;
-    public LinearLayoutManager linearLayoutManager = null;
-    public int position;
-    //   public LinearLayout linearLayout = null;
+    //复选框选中的文件
+    public List<MyFile> selectedUncompressedFiles = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         previewBar = (RecyclerView) findViewById(R.id.preview_bar);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh_layout);
         bottomPopupMenuLayout = (LinearLayout) findViewById(R.id.bottom_popup_menu_layout);
+        bottomMenuCompress = (Button) findViewById(R.id.bottom_popup_menu_compress);
+        bottomMenuDecompress = (Button) findViewById(R.id.bottom_popup_menu_decompress);
+        bottomMenuCompress.setOnClickListener(this);
+        bottomMenuDecompress.setOnClickListener(this);
         // linearLayout = (LinearLayout)findViewById(R.id.bottom_popup_menu_layout);
         //通过id加载控件
         //是否插入内存卡
@@ -78,10 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         previewBarItems = new ArrayList<String>() {{
             add("/storage/emulated/0");
         }};
-//        for(int i = 1;i<=12;i++) {
-//            File file = new File("/storage/emulated/0/dir1"+i);
-//            file.mkdir();
-//        }
+
         adapter = new PreviewBarAdapter(previewBarItems);
         adapter.setOnItemClickListener(this);
         previewBar.setAdapter(adapter);
@@ -89,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onRefresh() {
-        //   reFresh();
-        // swipeRefreshLayout.setRefreshing(false);
+        reFresh();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -113,53 +118,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             manager.popBackStack();
     }
 
-    @Override
-    public void onItemLongClick(View view, int position) {
-
-    }
-
     private void reFresh() {
+        toggleBottomPopupMenu();
         FolderFragment folderFragment = (FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout);
         folderFragment.onRefresh();
         Toast.makeText(this, "刷新成功!", Toast.LENGTH_SHORT).show();
     }
 
-    public void toggleBottomPopupMenu(LinearLayoutManager linearLayoutManager, int position) {
-        this.linearLayoutManager = linearLayoutManager;
-        //linearLayoutManager.getItemCount();
-        // MyAdapter myAdapter = ((FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout)).adapter;
-        //this.position = position;
+    public void onItemLongClick(int position) {
+        toggleBottomPopupMenu();
+    }
+
+    private void toggleBottomPopupMenu() {
         int begin = 0, end = 0;
         FolderFragment folderFragment = ((FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout));
         if (bottomPopupMenuLayout.getHeight() == 0) {
-            //Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
             end = 120;
-            int firstCount = linearLayoutManager.findFirstVisibleItemPosition();
-            int lastcount = linearLayoutManager.findLastVisibleItemPosition();
             folderFragment.adapter.setChecked(true);
             folderFragment.adapter.notifyDataSetChanged();
-//            for (int i = firstCount; i <= lastcount; i++) {
-//                View view = linearLayoutManager.getChildAt(i);
-//                //Log.d("test7", i+" : "+(view == null) + "");
-////                ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.VISIBLE);
-////                folderFragment.adapter.setChecked(true);
-//            }
 
         } else {
             begin = 120;
-            // Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
-
-            //Log.d("test7", (view1 == null) + "");
-            int firstCount = linearLayoutManager.findFirstVisibleItemPosition();
-            int lastcount = linearLayoutManager.findLastVisibleItemPosition();
-            Log.d("test7", firstCount + "   " + lastcount);
             folderFragment.adapter.setChecked(false);
             folderFragment.adapter.notifyDataSetChanged();
-//            for (int i = firstCount; i <= lastcount; i++) {
-//                View view = linearLayoutManager.getChildAt(i);
-//                ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.GONE);
-//
-//            }/**/
         }
         final ViewGroup.LayoutParams layoutParams = bottomPopupMenuLayout.getLayoutParams();
         final ValueAnimator animator = ValueAnimator.ofInt(begin, end);
@@ -174,13 +155,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         animator.start();
 
-//        if (manager.findFragmentById(R.id.bottom_popup_menu_fragment_layout) == null) {
-//            BottomPopupMenuFragment bottomPopupMenuFragment = new BottomPopupMenuFragment();
-//            FragmentTransaction transaction = manager.beginTransaction();
-//            transaction.add(R.id.bottom_popup_menu_fragment_layout, bottomPopupMenuFragment);
-//            transaction.addToBackStack(null);
-//            transaction.commit();
-//        }
     }
 
     @Override
@@ -209,14 +183,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.bottom_popup_menu_compress:
 
+                FolderFragment folderFragment = ((FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout));
+                selectedUncompressedFiles = new LinkedList<>(folderFragment.getSelectedFiles());
+                String str = "选中文件列表";
+                for (MyFile myFile : folderFragment.getSelectedFiles()) {
+                    str += (myFile.getAbsolutePath() + "\n");
+                }
+                Log.d("test9", str);
+                break;
+
+            case R.id.bottom_popup_menu_decompress:
+                break;
+        }
     }
 
     //如果底部菜单出来了，先返回底部菜单
     @Override
     public void onBackPressed() {
         if (bottomPopupMenuLayout.getHeight() != 0) {
-            toggleBottomPopupMenu(linearLayoutManager, position);
+            toggleBottomPopupMenu();
             return;
         }
         super.onBackPressed();

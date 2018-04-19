@@ -53,4 +53,13 @@ public class MyFile implements Serializable{
     public void setFileDescribe(String fileDescribe) {
         this.fileDescribe = fileDescribe;
     }
+
+    //绝对路径相同认为是同一个文件
+    @Override
+    public boolean equals(Object obj) {
+        if (((MyFile) obj).getAbsolutePath().equals(absolutePath)) {
+            return true;
+        }
+        return false;
+    }
 }

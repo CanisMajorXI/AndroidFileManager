@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,9 +25,9 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private FolderFragment folderFragment = null;
-    private List<MyFile> myFiles;
-    private Context context;
-    private OnItemClickListener onItemClickListener;
+    private List<MyFile> myFiles = null;
+    private Context context = null;
+    private OnFileItemClickListener onFileItemClickListener = null;
     public FragmentManager manager = null;
     private boolean isChecked = false;
 
@@ -41,19 +42,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_item, parent, false);
         final ViewHolder holder = new ViewHolder(view);
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                onItemClickListener.onItemClick(view, position);
+                onFileItemClickListener.onItemClick(view, position);
             }
         });
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 int position = holder.getAdapterPosition();
-                onItemClickListener.onItemLongClick(view, position);
+                onFileItemClickListener.onItemLongClick(view, position);
                 return true;
+            }
+        });
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = holder.getAdapterPosition();
+                onFileItemClickListener.onCheckedChange(buttonView, isChecked, myFiles.get(position));
             }
         });
         return holder;
@@ -95,8 +104,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public void setOnFileItemClickListener(OnFileItemClickListener onFileItemClickListener) {
+        this.onFileItemClickListener = onFileItemClickListener;
     }
 
     public boolean isChecked() {

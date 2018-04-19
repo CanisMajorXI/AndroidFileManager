@@ -15,10 +15,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.zqw.fileoperation.MainActivity;
 import com.zqw.fileoperation.adapters.MyAdapter;
 import com.zqw.fileoperation.R;
+import com.zqw.fileoperation.adapters.OnFileItemClickListener;
 import com.zqw.fileoperation.adapters.OnItemClickListener;
 import com.zqw.fileoperation.functions.FileFounder;
 import com.zqw.fileoperation.pojos.MyFile;
@@ -37,9 +39,11 @@ public class FolderFragment extends Fragment {
     private View view;
     private String absolutePath = "/storage/emulated/0";
     public MyAdapter adapter = null;
-    private   MainActivity mainActivity = null;
+    private MainActivity mainActivity = null;
+    private List<MyFile> selectedFiles = new LinkedList<>();
 
-    public LinearLayoutManager linearLayoutManager = null;
+
+    private LinearLayoutManager linearLayoutManager = null;
 
     public RecyclerView getRecyclerView() {
         return recyclerView;
@@ -101,11 +105,12 @@ public class FolderFragment extends Fragment {
 
     //实现点击，长按事件的回调
     private void recyclerViewAdpterAssemble() {
+        //每次刷新重置选中列表
+        selectedFiles.clear();
         adapter = new MyAdapter(myFiles, getActivity().getFragmentManager(), this, getActivity());
-        adapter.setOnItemClickListener(new OnItemClickListener() {
+        adapter.setOnFileItemClickListener(new OnFileItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //     Log.d("mytest", String.valueOf(holder.getAdapterPosition()));
                 MyFile myFile = myFiles.get(position);
                 int a = 10;
                 //所点击为目录的情况
@@ -137,41 +142,33 @@ public class FolderFragment extends Fragment {
                     transaction.commit();
                 }
             }
+
             //长按文件事件
             @Override
             public void onItemLongClick(View view, int position) {
+                mainActivity.onItemLongClick(position);
+            }
 
-               // Log.d("test2","OK!");
-                toggleBottomPopupMenu(linearLayoutManager, position);
-              //  ViewGroup.LayoutParams layoutParams = mainActivity.linearLayout.getLayoutParams();
-//                layoutParams.height=((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()));
-//            // layoutParams.height = expectedHeight;
-//                mainActivity.linearLayout.setLayoutParams(layoutParams);
+            @Override
+            public void onCheckedChange(CompoundButton buttonView, boolean isChecked, MyFile myFile) {
+                if (isChecked) {
+                    if (!selectedFiles.contains(myFile))
+                        selectedFiles.add(myFile);
+                } else {
+                    if (selectedFiles.contains(myFile))
+                        selectedFiles.remove(myFile);
+                }
             }
         });
         recyclerView.setAdapter(adapter);
     }
 
-    public void toggleBottomPopupMenu(LinearLayoutManager manager, int position) {
-        mainActivity.toggleBottomPopupMenu(linearLayoutManager, position);
-//        int begin = 0,end = 0;
-//        if(mainActivity.linearLayout.getLayoutParams().height ==0)
-//            end = 200;
-//        else {
-//            begin = 200;
-//        }
-//        final ViewGroup.LayoutParams layoutParams = mainActivity.linearLayout.getLayoutParams();
-//        final ValueAnimator  animator = ValueAnimator.ofInt(begin,end);
-//        animator.setDuration(600);
-//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                int expectedheight = (int)animation.getAnimatedValue();
-//                layoutParams.height=((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, expectedheight, getResources().getDisplayMetrics()));
-//                mainActivity.linearLayout.setLayoutParams(layoutParams);
-//            }
-//        });
-//        animator.start();
+    public LinearLayoutManager getLinearLayoutManager() {
+        return linearLayoutManager;
+    }
+
+    public List<MyFile> getSelectedFiles() {
+        return selectedFiles;
     }
 
 }

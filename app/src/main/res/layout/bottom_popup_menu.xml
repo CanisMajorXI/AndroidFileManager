@@ -23,6 +23,7 @@
 
         <Button
             android:text="压缩"
+            android:id="@+id/bottom_popup_menu_compress"
             android:layout_margin="5dp"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -30,6 +31,7 @@
 
         <Button
             android:text="解压"
+            android:id="@+id/bottom_popup_menu_decompress"
             android:layout_margin="5dp"
             android:layout_width="0dp"
             android:layout_weight="1"
