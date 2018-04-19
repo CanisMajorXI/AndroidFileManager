@@ -29,6 +29,7 @@ import com.zqw.fileoperation.adapters.PreviewBarAdapter;
 import com.zqw.fileoperation.fragments.BottomPopupMenuFragment;
 import com.zqw.fileoperation.fragments.FolderFragment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         previewBarItems = new ArrayList<String>() {{
             add("/storage/emulated/0");
         }};
+//        for(int i = 1;i<=12;i++) {
+//            File file = new File("/storage/emulated/0/dir1"+i);
+//            file.mkdir();
+//        }
         adapter = new PreviewBarAdapter(previewBarItems);
         adapter.setOnItemClickListener(this);
         previewBar.setAdapter(adapter);
@@ -87,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onRefresh() {
-        reFresh();
-        swipeRefreshLayout.setRefreshing(false);
+        //   reFresh();
+        // swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -132,18 +137,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.position = position;
         int begin = 0, end = 0;
         if (bottomPopupMenuLayout.getHeight() == 0) {
+            Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
             end = 120;
             for (int i = 0; i < itemcount; i++) {
                 View view = linearLayoutManager.getChildAt(i);
-                ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.VISIBLE);
+                //((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.VISIBLE);
             }
 
         } else {
             begin = 120;
-            Log.d("test7", itemcount + "");
-            for (int i = 0; i < itemcount; i++) {
+            //Log.d("test7", linearLayoutManager.getItemCount() + "");
+            Log.d("test7", linearLayoutManager.findLastVisibleItemPosition() + "complete:  " + linearLayoutManager.findLastCompletelyVisibleItemPosition());
+
+
+            View view1 = linearLayoutManager.findViewByPosition(7);
+            Log.d("test7", (view1 == null) + "");
+            for (int i = 0; i < 5; i++) {
                 View view = linearLayoutManager.getChildAt(i);
-                //  ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.GONE);
+                ((CheckBox) view.findViewById(R.id.file_item_checkBox)).setVisibility(View.VISIBLE);
             }/**/
         }
         final ViewGroup.LayoutParams layoutParams = bottomPopupMenuLayout.getLayoutParams();

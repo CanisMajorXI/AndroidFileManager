@@ -38,6 +38,7 @@ public class FolderFragment extends Fragment {
     private String absolutePath = "/storage/emulated/0";
     public MyAdapter adapter = null;
     private   MainActivity mainActivity = null;
+    private boolean isChecked = false;
 
     public LinearLayoutManager linearLayoutManager = null;
 
@@ -174,6 +175,14 @@ public class FolderFragment extends Fragment {
 //            }
 //        });
 //        animator.start();
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }
 

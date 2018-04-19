@@ -3,6 +3,7 @@ package com.zqw.fileoperation.adapters;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         else if (myFile.getType() == 1) {
             holder.thumbnail.setBackgroundResource(R.drawable.file1);
         }
+        holder.checkBox.setVisibility(View.VISIBLE);
     }
     @Override
     public int getItemCount() {
