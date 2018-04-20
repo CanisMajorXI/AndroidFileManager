@@ -4,6 +4,9 @@ package com.zqw.fileoperation.functions;
  * Created by 51376 on 2018/4/19.
  */
 
+import com.zqw.fileoperation.tasks.CompressTask;
+import com.zqw.fileoperation.tasks.DecompressTask;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -18,29 +21,36 @@ import java.util.zip.ZipOutputStream;
 
 public class MyCompress {
 
+    private volatile static boolean isCancelled = false;
+
+    public static void setCancelled(boolean cancelled) {
+        isCancelled = cancelled;
+    }
 
     //filePathes列表最后一个为压缩文件路径
-    public static boolean execCompress(List<String> filePathes) {
-        String zipFilePath = filePathes.get(filePathes.size()-1);
-        filePathes.remove(filePathes.size()-1);
+    public static boolean execCompress(List<String> filePathes, CompressTask compressTask) {
+        String zipFilePath = filePathes.get(filePathes.size() - 1);
+        filePathes.remove(filePathes.size() - 1);
         ZipOutputStream zipOutputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
         try {
+            File file1 = new File(zipFilePath);
+            if (file1.exists()) throw new Exception();
             zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFilePath));
             bufferedOutputStream = new BufferedOutputStream(zipOutputStream, 1048576);
             for (String sourceFilePath : filePathes) {
-                System.out.println("压缩中...");
+                if (isCancelled) throw new Exception("cancel");
                 File file = new File(sourceFilePath);
-                compress(zipOutputStream, bufferedOutputStream, file, "");
-                System.out.println("压缩完成!");
+                compress(zipOutputStream, bufferedOutputStream, file, "", compressTask);
             }
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             File file = new File(zipFilePath);
             if (file.exists()) file.delete();
             e.printStackTrace();
             return false;
         } finally {
+            isCancelled = false;
             try {
                 if (bufferedOutputStream != null)
                     bufferedOutputStream.close();
@@ -50,15 +60,19 @@ public class MyCompress {
         }
     }
 
-    public static boolean execDecompress(String sourceZipFileName, String DestFilePath) {
+    public static boolean execDecompress(List<String> list, DecompressTask decompressTask) {
+        String sourceZipFileName = list.get(0);
+        String DestFilePath = list.get(1);
+        System.out.println("源文件和目的文件" + sourceZipFileName + "  " + DestFilePath);
         ZipInputStream zipInputStream = null;
         try {
             zipInputStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(sourceZipFileName)));
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (isCancelled) throw new Exception();
                 BufferedOutputStream bufferedOutputStream = null;
                 try {
-                    System.out.println("提取" + entry.getName() + entry.getName().lastIndexOf("/"));
+                    decompressTask.publishDecompressProgress(entry.getName() + entry.getName().lastIndexOf("/"));
                     int lastIndex = entry.getName().lastIndexOf("/");
                     String preFixPath = "/";
                     if (lastIndex != -1) {
@@ -80,11 +94,12 @@ public class MyCompress {
                     e.printStackTrace();
                     return false;
                 } finally {
+                    isCancelled = false;
                     if (bufferedOutputStream != null)
                         bufferedOutputStream.close();
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
@@ -97,17 +112,19 @@ public class MyCompress {
         return true;
     }
 
-    private static void compress(ZipOutputStream out, BufferedOutputStream bufferedOutputStream, File sourceFile, String base) throws IOException {
+    private static void compress(ZipOutputStream out, BufferedOutputStream bufferedOutputStream, File sourceFile, String base, CompressTask compressTask) throws Exception {
+        if (isCancelled) throw new Exception("cancel");
         if (sourceFile.isDirectory()) {
             File[] files = sourceFile.listFiles();
             if (files.length == 0) {
                 out.putNextEntry(new ZipEntry(base + sourceFile.getName() + "/"));
             } else {
                 for (File file : files) {
-                    compress(out, bufferedOutputStream, file, base + sourceFile.getName() + "/");
+                    compress(out, bufferedOutputStream, file, base + sourceFile.getName() + "/", compressTask);
                 }
             }
         } else {
+            compressTask.publishCompressProgress(sourceFile.getAbsolutePath());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(sourceFile));
             out.putNextEntry(new ZipEntry(base + sourceFile.getName()));
             int tag;
@@ -143,7 +160,7 @@ public class MyCompress {
 //       // String dest = "second1.zip";
         //  execCompress(list, dest);
         //execCompress(srcPath, destPath1);
-        execDecompress(destPath1, destPath);
+        //execDecompress(destPath1, destPath);
 
 
     }

@@ -40,10 +40,10 @@ public class FileFounder {
             myFile.setAbsolutePath(subFile.getAbsolutePath());
             if (subFile.isDirectory()) {
                 myFile.setFileDescribe("目录");
-                myFile.setType(0);
+                myFile.setType(MyFile.TYPE_DIR);
             } else {
                 myFile.setFileDescribe("文件");
-                myFile.setType(1);
+                myFile.setType(MyFile.TYPE_FILE);
             }
             myFiles.add(myFile);
         }

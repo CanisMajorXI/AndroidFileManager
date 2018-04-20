@@ -13,6 +13,8 @@ public class MyFile implements Serializable{
     private String absolutePath;
     private long size;
 
+    public static int TYPE_FILE = 1;
+    public static int TYPE_DIR = 0;
     public int getType() {
         return type;
     }
