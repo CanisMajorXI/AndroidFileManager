@@ -40,6 +40,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+        Log.d("test11", "oncreate");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_item, parent, false);
         final ViewHolder holder = new ViewHolder(view);
 

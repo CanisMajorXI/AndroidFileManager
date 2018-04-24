@@ -179,44 +179,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void toggleBottomPopupMenu() {
         if (bottomPopupMenuLayout.getHeight() == 0) unholdBottomPopupMenu();
         else holdBottomPopMenu();
-//        compressStatus = COMPRESS_STATUS_UNDO;
-//        changeTextByStatus(compressStatus);
-//        int begin = 0, end = 0;
-//        FolderFragment folderFragment = ((FolderFragment) manager.findFragmentById(R.id.folder_fragment_layout));
-//        if (bottomPopupMenuLayout.getHeight() == 0) {
-//            end = 120;
-//            folderFragment.adapter.setChecked(true);
-//            folderFragment.adapter.notifyDataSetChanged();
-//
-//        } else {
-//            begin = 120;
-//            folderFragment.adapter.setChecked(false);
-//            folderFragment.adapter.notifyDataSetChanged();
-//        }
-//        final ViewGroup.LayoutParams layoutParams = bottomPopupMenuLayout.getLayoutParams();
-//        final ValueAnimator animator = ValueAnimator.ofInt(begin, end);
-//        animator.setDuration(600);
-//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                int expectedheight = (int) animation.getAnimatedValue();
-//                layoutParams.height = ((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, expectedheight, getResources().getDisplayMetrics()));
-//                bottomPopupMenuLayout.setLayoutParams(layoutParams);
-//            }
-//        });
-//        animator.start();
     }
 
     private void changeTextByStatus(int status) {
         if (status == COMPRESS_STATUS_UNDO) {
             bottomMenuCompress.setText("压缩选中文件");
             bottomMenuDecompress.setText("解压选中文件");
+            bottomMenuCompress.setEnabled(true);
+            bottomMenuDecompress.setEnabled(true);
         } else if (status == COMPRESS_STATUS_SELECTFILES) {
             bottomMenuCompress.setText("压缩到此处");
             bottomMenuDecompress.setText("解压选中文件");
+            bottomMenuCompress.setEnabled(true);
+            bottomMenuDecompress.setEnabled(false);
         } else if (status == COMPRESS_STATUS_SELECTZIPFILE) {
             bottomMenuDecompress.setText("解压到此处");
             bottomMenuCompress.setText("压缩选中文件");
+            bottomMenuCompress.setEnabled(false);
+            bottomMenuDecompress.setEnabled(true);
         }
     }
 
@@ -289,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     for (MyFile myFile : folderFragment.getSelectedFiles()) {
                         str += (myFile.getAbsolutePath() + "\n");
                     }
-                    Log.d("test9", str);
+                    //Log.d("test9", str);
                     if (folderFragment.getSelectedFiles().size() != 1 || folderFragment.getSelectedFiles().get(0).getType() != MyFile.TYPE_FILE || !folderFragment.getSelectedFiles().get(0).getAbsolutePath().matches("((\\S+(\\S|\\s)*\\S+)|\\S+)\\.zip")) {
                         Toast.makeText(this, "请选择一个zip类型的压缩文件进行压缩！", Toast.LENGTH_SHORT).show();
                         break;
